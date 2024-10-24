@@ -1,25 +1,65 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { useParams } from "react-router-dom"
-import { AppContext  } from '../context/AppContext'
+import { AppContext } from '../context/AppContext'
 import { assets } from '../assets/assets'
 
 
 const Apointment = () => {
 
   const { docId } = useParams()
-  const { doctors , currencySymbol } = useContext(AppContext)
+  const { doctors, currencySymbol } = useContext(AppContext)
 
   const [docInfo, setDocInfo] = useState(null)
+  const [docSlots, setDocSlots] = useState([])
+  const [slotIndex, setSlotIndex] = useState(0)
+  const [slotTime, setSlotTime] = useState('')
 
   const fetchDocInfo = async () => {
     let docInfo = doctors.find(doc => doc._id === docId)
     setDocInfo(docInfo)
   }
 
+  const getAvailableSlot = async () => {
+    setDocSlots([])   // first clear all previous slot
+
+    // getting current Date
+
+    let today = new Date()
+
+    for (let i = 0; i < 7; i++) {
+      //geting date with index  
+      let currDate = new Date(today)
+      currDate.setDate(today.getDate() + i)
+
+      //setting and time of the date with index
+      let endTime = new Date()
+      endTime.setDate(today.getDate() + 1)
+      endTime.setHours(21, 0, 0, 0)
+
+      //setting hours
+
+      if (today.getDate === currDate.getDate()) {
+        currDate.setHours(currDate.getHours() > 10 ? currDate.getHours() + 1 : 10)
+        currDate.setMinutes(currDate.getMinutes() > 30 ? 30 : 0)
+      } else {
+        currDate.setHours(10)
+        currDate.setMinutes(0)
+      }
+      while(currDate < endTime){
+        let formattedTime =  currDate.toLocaleTimeString
+      }
+    }
+
+  }
+
+
   useEffect(() => {
     fetchDocInfo()
   }, [doctors, docId])
 
+  useEffect(() => {
+    getAvailableSlot()
+  }, [])
 
   return docInfo && (
     <div>
