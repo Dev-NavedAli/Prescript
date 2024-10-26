@@ -8,6 +8,7 @@ const Apointment = () => {
 
   const { docId } = useParams()
   const { doctors, currencySymbol } = useContext(AppContext)
+  const daysOfWeek = ['SUN', 'MON', 'TUES', 'WED', 'THU', 'FRI', 'SAT']
 
   const [docInfo, setDocInfo] = useState(null)
   const [docSlots, setDocSlots] = useState([])
@@ -33,7 +34,7 @@ const Apointment = () => {
 
       //setting and time of the date with index
       let endTime = new Date()
-      endTime.setDate(today.getDate() + 1)
+      endTime.setDate(today.getDate() + i)
       endTime.setHours(21, 0, 0, 0)
 
       //setting hours
@@ -45,9 +46,24 @@ const Apointment = () => {
         currDate.setHours(10)
         currDate.setMinutes(0)
       }
-      while(currDate < endTime){
-        let formattedTime =  currDate.toLocaleTimeString
+
+      let timeSlots = []
+      while (currDate < endTime) {
+        let formattedTime = currDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+
+        //add slot to array
+
+        timeSlots.push({
+          datetime: new Date(currDate),
+          time: formattedTime
+        })
+
+        // increament current time with 30 minutes
+
+        currDate.setMinutes(currDate.getMinutes() + 30)
       }
+
+      setDocSlots(prev => ([...prev, timeSlots]))
     }
 
   }
@@ -61,6 +77,10 @@ const Apointment = () => {
     getAvailableSlot()
   }, [])
 
+  useEffect(() => {
+    console.log(docSlots);
+
+  }, [docSlots])
   return docInfo && (
     <div>
       {/* Docotor profile */}
@@ -91,6 +111,31 @@ const Apointment = () => {
           <p className='text-gray-500 font-medium mt-4'>
             Appointment fee : <span className='text-gray-600'>{currencySymbol}{docInfo.fees}</span></p>
         </div>
+      </div>
+
+      {/* -----------------booking slots----------------- */}
+
+      <div className='sm:ml-72  sm:pl-4 mt-4 font-medium text-gray-700'>
+        <p>Booking Slots</p>
+        <div className='flex gap-3 items-center w-full overflow-x-scroll mt-4'>
+          {
+            docSlots.length && docSlots.map((item, index) => (
+              <div onClick={() => {
+                setSlotIndex(index)
+              }} key={index} className={`text-center py-6 min-w-16 rounded-full cursor-pointer ${slotIndex === index ? 'bg-primary text-white' : 'border border-gray-200'}`} >
+                <p>{item[0] && daysOfWeek[item[0].datetime.getDay()]}</p>
+                <p>{item[0] && item[0].datetime.getDate()}</p>
+              </div>))
+          }
+        </div>
+        <div className='flex items-center gap-3 w-full overflow-scroll mt-4'>
+          {
+            docSlots.length && docSlots[slotIndex].map((item, index) => (
+              <p onClick={()=>setSlotTime(item.time)} className={`text-sm font-light flex-shrink-0 px-5 py-2 rounded-full cursor-pointer ${item.time === slotTime ? 'bg-primary text-white' : 'text-gray-400 border border-gray-300' } `} key={index}>{item.time.toLowerCase()}</p>
+            ))
+          }
+        </div>
+        <button className='bg-primary text-white text-sm font-light px-14 py-3 rounded-full my-6'>Book an apointment</button>
       </div>
     </div>
   )
