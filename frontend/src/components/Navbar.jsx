@@ -10,7 +10,7 @@ const Navbar = () => {
   const navigate = useNavigate()
   return (
     <div className='flex items-center justify-between text-sm py-4 mb-5 border-b border-b-gray-500'>
-      <img onClick={()=>navigate('/')} className='w-44 cursor-pointer' src={assets.logo} alt="" />
+      <img onClick={() => navigate('/')} className='w-44 cursor-pointer' src={assets.logo} alt="" />
       <ul className='hidden md:flex items-start gap-5 font-medium'>
         <NavLink to='/'>
           <li className='py-1'>Home</li>
@@ -37,14 +37,30 @@ const Navbar = () => {
               <img src={assets.dropdown_icon} className='w-2.5' alt="" />
               <div className='absolute top-0 right-0 pt-14 text-base font-medium text-gray-600 z-20 opacity-0 invisible transform translate-y-2 transition-all duration-300 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0'>
                 <div className='min-w-48 bg-stone-100 rounded flex flex-col gap-4 p-4'>
-                  <p onClick={()=> navigate('/profile')} className='hover:text-black cursor-pointer '>My profile</p>
-                  <p onClick={()=> navigate('/my-apointments')} className='hover:text-black cursor-pointer '>My Appointments</p>
-                  <p onClick={()=>setToken(false)} className='hover:text-black cursor-pointer '>Logout</p>
+                  <p onClick={() => navigate('/profile')} className='hover:text-black cursor-pointer '>My profile</p>
+                  <p onClick={() => navigate('/my-apointments')} className='hover:text-black cursor-pointer '>My Appointments</p>
+                  <p onClick={() => setToken(false)} className='hover:text-black cursor-pointer '>Logout</p>
                 </div>
               </div>
             </div>
             : <button onClick={() => navigate(`/login`)} className='bg-primary text-white px-8 py-3 rounded-full font-light hidden md:block hover:scale-105 transition-all duration-300'>Create account</button>
         }
+        <img onClick={() => setShowMenu(true)} src={assets.menu_icon} className='w-6 md:hidden' alt="" />
+        {/* Mobile menu */}
+
+        <div className={`${showMenu ? 'fixed w-full' : 'h-0 w-0'} md:hidden right-0 top-0 bottom-0 z-20 overflow-hidden bg-white transition-all`}>
+          <div className='flex items-center justify-between  px-5 py-6'>
+            <img src={assets.logo} alt="" className='w-36' />
+            <img onClick={() => setShowMenu(false)} src={assets.cross_icon} className='w-7' alt="" />
+          </div>
+          <ul>
+            <NavLink to='/'>Home</NavLink>
+            <NavLink to='/doctors'>ALL DOCTORS </NavLink>
+            <NavLink to='/about'>ABOUT</NavLink>
+            <NavLink to='/contact'>CONTACT</NavLink>
+          </ul>
+        </div>
+
       </div>
     </div>
   )
