@@ -5,10 +5,8 @@ dotenv.config()
 
 const dbUrl = process.env.MONGODB_URL
 
-const connectDb = async()=>{
-    console.log(dbUrl);
-    
+const connectDB = async()=>{
     await mongoose.connect(`${dbUrl}/prescripto`)
 }
 
-export default connectDb;
+export default connectDB;
