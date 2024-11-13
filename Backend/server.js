@@ -13,14 +13,7 @@ const PORT = process.env.PORT || 3000;
 
 //middlewares
 app.use(express.json())
-// app.use(cors())
-
-app.use(cors({
-    origin: 'https://hoppscotch.io', // Allow requests from Hoppscotch
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allowed methods
-    allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
-    credentials: true // If you need to allow cookies/auth headers
-  }));
+app.use(cors())
 
 connectDB().then(()=>{
     console.log('connected to db successfully');
