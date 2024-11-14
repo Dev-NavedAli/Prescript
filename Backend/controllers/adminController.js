@@ -11,30 +11,9 @@ dotenv.config()
 
 const addDoctor = async (req, res) => {
   try {
-    const {
-      name,
-      email,
-      password,
-      speciality,
-      degree,
-      experience,
-      about,
-      fees,
-      address,
-    } = req.body;
+    const {name,email,password,speciality,degree,experience,about,fees,address,} = req.body;
     const imageFile = req.file;
-    if (
-      !name ||
-      !email ||
-      !password ||
-      !speciality ||
-      !degree ||
-      !experience ||
-      !about ||
-      !fees ||
-      !address ||
-      !imageFile
-    ) {
+    if (!name ||!email ||!password ||!speciality ||!degree ||!experience ||!about ||!fees ||!address ||!imageFile) {
       return res.json({
         success: false,
         message: "Error something is missing",
@@ -70,12 +49,7 @@ const addDoctor = async (req, res) => {
     });
     const imageUrl = imageUpload.secure_url;
 
-    const doctorData = {
-      name,
-      email,
-      image: imageUrl,
-      password: hashed_password,
-      speciality,
+    const doctorData = {name, email, image: imageUrl, password: hashed_password,speciality,
       degree,
       experience,
       about,
@@ -104,8 +78,6 @@ const loginAdmin = async(req,res)=>{
         }else{
             res.json({success:false,message:"Invalid Credentials"})
         }
-
-
     } catch (error) {
         return res.json({ succes: false, message: error.message });
     }
