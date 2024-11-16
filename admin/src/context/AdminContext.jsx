@@ -1,16 +1,18 @@
-import { createContext } from "react"
+import { createContext } from "react";
 
 export const AdminContext = createContext()
 
-
 const AdminContextProvider = (props) => {
+
     const value = {
 
     }
 
-    return <AdminContext.Provider>
-        {props.children}
-    </AdminContext.Provider>
+    return (
+        <AdminContext.Provider value={value}>
+            {props.children}
+        </AdminContext.Provider>
+    )
 
 }
 
