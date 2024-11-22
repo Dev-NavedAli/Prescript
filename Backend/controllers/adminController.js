@@ -88,9 +88,9 @@ const loginAdmin = async(req,res)=>{
 const allDoctors = async(req,res)=>{
   try {
 
-    const doctor  =  await doctorModel.find({}).select('-password') //isse password nhi aayega doctor me 
+    const doctor  =  await doctorModel.find({}).select('-password') //isse password nhi include hota hai response me
     res.json({succes:true,doctor})
-    
+
   } catch (error) {
     return res.json({ succes: false, message: error.message })
   }
