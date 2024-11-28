@@ -1,7 +1,15 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { assets } from "../assets/assets.js"
+import { AppContext } from '../context/AppContext.jsx'
+import axios from 'axios'
 
 const MyProfile = () => {
+
+  const {backendUrl} = useContext(AppContext)
+
+  const UserData = async () => {
+    const {data} = await axios.get(backendUrl)
+  }
 
   const [userData, setUserData] = useState({
     name: 'Edward Vincent',

@@ -79,4 +79,19 @@ const loginUser = async (req, res) => {
   
 };
 
-export { registerUser, loginUser };
+//Api to get user data
+
+const userData = async(req,res)=>{
+  try {
+    const data = await userModel.find({})
+   if(data){
+    res.json({success:true,data})
+   }else{
+    return res.json({success:false,message:"Error"})
+   }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export { registerUser, loginUser ,userData };
