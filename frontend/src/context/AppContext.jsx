@@ -4,20 +4,21 @@ import { toast } from "react-toastify";
 
 export const AppContext = createContext()
 
-const AppContextProvider = (props)=>{
+const AppContextProvider = (props) => {
 
-    const backendUrl =  import.meta.env.VITE_BACKEND_URL
+    const backendUrl = import.meta.env.VITE_BACKEND_URL
     const currencySymbol = '$'
-    const [token,setToken] = useState(localStorage.getItem('token')?localStorage.getItem('token'):false)
-    const [doctors,setDoctors] = useState([])
+    const [token, setToken] = useState(localStorage.getItem('token') ? localStorage.getItem('token') : false)
+    const [doctors, setDoctors] = useState([])
+    const [userData, setUserData] = useState(false)
 
-    const getDoctorData = async()=>{
+    const getDoctorData = async () => {
 
         try {
-            const {data} = await axios.get(backendUrl+'/api/doctor/list')
-            if(data.success){
+            const { data } = await axios.get(backendUrl + '/api/doctor/list')
+            if (data.success) {
                 setDoctors(data.doctors)
-            }else{
+            } else {
                 toast.error(data.message)
             }
         } catch (error) {
@@ -26,19 +27,42 @@ const AppContextProvider = (props)=>{
         }
     }
 
-    const value = {
-
-        doctors,currencySymbol,token,setToken,backendUrl
-
+    const loadUserProfileData = async () => {
+        try {
+            const { data } = await axios.get(backendUrl + '/api/user/get-profile', { headers: { token } })
+            if(data.success){
+                setUserData(data.userData)
+            }else{
+                toast.error(data.message)
+            }
+        }
+        catch (error) {
+            console.log(error);
+            toast.error(error.message)
+        }
     }
 
     useEffect(()=>{
-        getDoctorData()
-    },[])
+        if(token){
+            loadUserProfileData()
+        }else{
+            setUserData(false)
+        }
+    },[token])
 
-     return <AppContext.Provider value={value}>
+    const value = {
+
+        doctors, currencySymbol, token, setToken, backendUrl,userData,setUserData,loadUserProfileData
+
+    }
+
+    useEffect(() => {
+        getDoctorData()
+    }, [])
+
+    return <AppContext.Provider value={value}>
         {props.children}
-     </AppContext.Provider>
+    </AppContext.Provider>
 }
 
 export default AppContextProvider

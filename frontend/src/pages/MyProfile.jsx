@@ -1,38 +1,16 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { assets } from "../assets/assets.js"
+
 import { AppContext } from '../context/AppContext.jsx'
-import axios from 'axios'
+
 
 const MyProfile = () => {
 
-  const {backendUrl} = useContext(AppContext)
+  const {userData,setUserData} = useContext(AppContext)
 
-  const UserData = async () => {
-    const {data} = await axios.get(backendUrl+'/api/user/data')
-    if(data.success){
-      console.log(data);
-    }
-  }
-  useEffect(()=>{
-    UserData()
-  },[])
-
-  const [userData, setUserData] = useState({
-    name: 'Edward Vincent',
-    image: assets.profile_pic,
-    email: 'demo@gmail.com',
-    phone: '+91 8077669812',
-    address: {
-      line1: '57th Cross Richmont Suite,',
-      line2: 'Circle Church Road , London',
-    },
-    gender: "Male",
-    dob: "2001-04-13"
-  })
 
   const [isEdit, setIsEdit] = useState(false)
 
-  return (
+  return userData && (
     <div className='max-w-lg flex flex-col gap-2 text-sm'>
       <img src={userData.image} className='w-36 rounded' alt="" />
 
