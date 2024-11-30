@@ -17,15 +17,15 @@ const Login = () => {
 
   const onSubmitHandler = async (e) => {
     e.preventDefault()
-
     try {
-      if (state == 'Sign Up ') {
+      if (state == 'Sign Up') {
         const { data } = await axios.post(backendUrl + '/api/user/register', { name, password, email })
         if (data.success) {
           localStorage.setItem('token', data.token)
           setToken(data.token)
         } else {
           toast.error(error.message)
+          console.log(error);
         }
       } else {
         const { data } = await axios.post(backendUrl + '/api/user/login', { password, email })
@@ -38,6 +38,8 @@ const Login = () => {
       }
     } catch (error) {
       toast.error(error.message)
+      console.log(error);
+      
     }
   }
   
