@@ -16,6 +16,6 @@ const apointmentSchema = new Schema({
   isCompleted: { type: Boolean, default: false },
 });
 
-const apointmentModel  = mongoose.Model('apointment',apointmentSchema)
+const apointmentModel  = mongoose.model('apointment',apointmentSchema)
 
 export default apointmentModel;

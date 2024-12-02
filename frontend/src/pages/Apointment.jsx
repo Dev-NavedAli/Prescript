@@ -1,15 +1,19 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { AppContext } from '../context/AppContext'
 import { assets } from '../assets/assets'
 import RelatedDoctor from '../components/RelatedDoctor'
+import { toast } from 'react-toastify'
+import axios from 'axios'
 
 
 const Apointment = () => {
 
   const { docId } = useParams()
-  const { doctors, currencySymbol } = useContext(AppContext)
+  const { doctors, currencySymbol, backendUrl, token, getDoctorData } = useContext(AppContext)
   const daysOfWeek = ['SUN', 'MON', 'TUES', 'WED', 'THU', 'FRI', 'SAT']
+
+  const navigate = useNavigate()
 
   const [docInfo, setDocInfo] = useState(null)
   const [docSlots, setDocSlots] = useState([])
@@ -69,6 +73,36 @@ const Apointment = () => {
 
   }
 
+  const bookApointment = async (req, res) => {
+
+    if (!token) {
+      toast.warn('Log in to book appointment')
+      return navigate('/login')
+    }
+      
+    try {
+      const date = docSlots[slotIndex][0].datetime
+      let day = date.getDate()
+      let month = date.getMonth() + 1
+      let year = date.getFullYear()
+
+      let slotDate = day + "_" + month + "_" + year
+
+      const { data } = await axios.post(backendUrl + '/api/user/book-apointment', { docId, slotDate, slotTime }, { headers: { token } })
+      if (data.success) {
+        toast.success(data.message)
+        getDoctorData()
+        navigate('/my-apointments')
+      } else {
+        toast.error(data.message)
+      }
+
+    } catch (error) {
+      toast.error(error.message)
+      console.log(error);
+
+    }
+  }
 
   useEffect(() => {
     fetchDocInfo()
@@ -132,11 +166,11 @@ const Apointment = () => {
         <div className='flex items-center gap-3 w-full overflow-scroll mt-4'>
           {
             docSlots.length && docSlots[slotIndex].map((item, index) => (
-              <p onClick={() => setSlotTime(item.time)} className={`text-sm font-light flex-shrink-0 px-5 py-2 rounded-full cursor-pointer ${item.time === slotTime ? 'bg-primary text-white':'text-gray-400 border border-gray-300'}`} key={index}>{item.time.toLowerCase()}</p>
+              <p onClick={() => setSlotTime(item.time)} className={`text-sm font-light flex-shrink-0 px-5 py-2 rounded-full cursor-pointer ${item.time === slotTime ? 'bg-primary text-white' : 'text-gray-400 border border-gray-300'}`} key={index}>{item.time.toLowerCase()}</p>
             ))
           }
         </div>
-        <button className='bg-primary text-white text-sm font-light px-14 py-3 rounded-full my-6'>Book an apointment</button>
+        <button onClick={bookApointment} className='bg-primary text-white text-sm font-light px-14 py-3 rounded-full my-6'>Book an apointment</button>
       </div>
 
       {/* Listing the Related Doctor */}
