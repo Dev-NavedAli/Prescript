@@ -3,7 +3,7 @@ import validator from "validator";
 import userModel from "../models/userModel.js";
 import bcrypt, { genSalt } from "bcrypt";
 import jwt from "jsonwebtoken";
-import {v2 as cloudinary} from 'cloudinary'
+import { v2 as cloudinary } from "cloudinary";
 import doctorModel from "../models/doctorModel.js";
 import apointmentModel from "../models/apointmentModel.js";
 
@@ -108,12 +108,14 @@ const updateProfile = async (req, res) => {
       dob,
       gender,
     });
-    if(imageFile){
-      const imageUpload = await cloudinary.uploader.upload(imageFile.path,{resource_type:'image'})
-      const imageUrl  = imageUpload.secure_url
-      await userModel.findByIdAndUpdate(userId,{image:imageUrl})
+    if (imageFile) {
+      const imageUpload = await cloudinary.uploader.upload(imageFile.path, {
+        resource_type: "image",
+      });
+      const imageUrl = imageUpload.secure_url;
+      await userModel.findByIdAndUpdate(userId, { image: imageUrl });
     }
-    res.json({success:true,message:'Profile Updated'})
+    res.json({ success: true, message: "Profile Updated" });
   } catch (error) {
     res.json({ success: false, message: error.message });
     console.log(error);
@@ -122,57 +124,69 @@ const updateProfile = async (req, res) => {
 
 //API TO BOOK APOINTMENT
 
-const bookApointment = async(req,res)=>{
+const bookApointment = async (req, res) => {
   try {
-    const {userId , docId, slotDate , slotTime } = req.body
-    const docData = await doctorModel.findById(docId).select('-password')
+    const { userId, docId, slotDate, slotTime } = req.body;
+    const docData = await doctorModel.findById(docId).select("-password");
 
     if (!docData.available) {
-      return res.json({success:false,message:'Doctor not available'})
+      return res.json({ success: false, message: "Doctor not available" });
     }
 
-    let slots_booked = docData.slots_booked
+    let slots_booked = docData.slots_booked;
 
     //checking for slots availability
 
-    if(slots_booked[slotDate]){
-      if(slots_booked[slotDate].includes(slotTime)) {
-        return res.json({success:false,message:'slots not available'})
-      }else{
-        slots_booked[slotDate].push(slotTime)
+    if (slots_booked[slotDate]) {
+      if (slots_booked[slotDate].includes(slotTime)) {
+        return res.json({ success: false, message: "slots not available" });
+      } else {
+        slots_booked[slotDate].push(slotTime);
       }
-    }else{
-      slots_booked[slotDate] = []
-      slots_booked[slotDate].push(slotTime)
+    } else {
+      slots_booked[slotDate] = [];
+      slots_booked[slotDate].push(slotTime);
     }
 
-    const userData = await userModel.findById(userId).select('-password')
+    const userData = await userModel.findById(userId).select("-password");
 
-    delete docData.slots_booked
+    delete docData.slots_booked;
 
-    const appoitmentData ={
+    const appoitmentData = {
       userId,
       docId,
       userData,
       docData,
-      amount:docData.fees,
+      amount: docData.fees,
       slotTime,
       slotDate,
-      date:Date.now(),
-    }
+      date: Date.now(),
+    };
 
-    const newApointment = new apointmentModel(appoitmentData)
-    await newApointment.save()
+    const newApointment = new apointmentModel(appoitmentData);
+    await newApointment.save();
 
     //save new slots data in docData
-    await doctorModel.findByIdAndUpdate(docId,{slots_booked})
+    await doctorModel.findByIdAndUpdate(docId, { slots_booked });
 
-    res.json({success:true,message:'Apointment Booked'})
-
+    res.json({ success: true, message: "Apointment Booked" });
   } catch (error) {
     res.json({ success: false, message: error.message });
-    console.log(error)
+    console.log(error);
   }
-}
+};
 
-export { registerUser, loginUser, getProfile , updateProfile , bookApointment};
+//API TO GET USER APOINTMNETS FOR FRONTEND MY-APPOINTMENT PAGE
+
+const listApointments = async (req, res) => {
+  try {
+    const { userId } = req.body;
+    const apointments = await apointmentModel.find({ userId });
+    res.json({ success: true, apointments });
+  } catch (error) {
+    res.json({ success: false, message: error.message });
+    console.log(error);
+  }
+};
+
+export { registerUser, loginUser, getProfile, updateProfile, bookApointment ,listApointments };
