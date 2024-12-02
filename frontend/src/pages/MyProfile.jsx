@@ -22,13 +22,12 @@ const MyProfile = () => {
       image && formData.append('image', image)
 
       const { data } = await axios.post(backendUrl + '/api/user/update-profile', formData, { headers: { token } })
-
-      console.log(data);
-      toast.success(data.message)
-      await loadUserProfileData()
-      setIsEdit(false) //for coming outside of edit mode
-      setImage(false)
-
+       if(data.success){
+        toast.success(data.message)
+        await loadUserProfileData()
+        setIsEdit(false) //for coming outside of edit mode
+        setImage(false)
+       }
     } catch (error) {
       console.log(error);
       toast.error(error.message)
