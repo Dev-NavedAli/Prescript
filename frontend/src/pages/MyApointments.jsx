@@ -2,11 +2,16 @@ import React, { useContext, useEffect, useState } from 'react'
 import { AppContext } from '../context/AppContext'
 import axios from 'axios'
 import { toast } from 'react-toastify'
-
 const MyApointments = () => {
 
   const { backendUrl, token } = useContext(AppContext)
   const [apointments, setApointments] = useState([])
+  const months = ['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+
+  const slotDateFormat = (slotDate)=>{
+    const dateArray = slotDate.split('_')
+    return dateArray[0]+" "+months[Number(dateArray[1])]+" "+dateArray[2]
+  }
 
   const getUserApointments = async () => {
     try {
@@ -45,7 +50,7 @@ const MyApointments = () => {
                 <p className='text-zinc-700 font-medium mt-1'>Address : </p>
                 <p className='text-xs'>{item.docData.address.line1}</p>
                 <p className='text-xs'>{item.docData.address.line2}</p>
-                <p><span className='text-sm text-neutral-700 font-medium'>Date & Time</span> <span className=''> {item.slotDate} | {item.slotTime}</span></p>
+                <p><span className='text-sm text-neutral-700 font-medium'>Date & Time</span> <span className=''> {slotDateFormat(item.slotDate)} | {item.slotTime}</span></p>
               </div>
               <div></div>
               <div className='flex flex-col gap- justify-end'>

@@ -101,13 +101,7 @@ const updateProfile = async (req, res) => {
     if (!name || !phone || !dob || !gender) {
       return res.json({ success: false, message: "Data is missing " });
     }
-    await userModel.findByIdAndUpdate(userId, {
-      name,
-      phone,
-      address: JSON.parse(address),
-      dob,
-      gender,
-    });
+    await userModel.findByIdAndUpdate(userId, { name, phone, address: JSON.parse(address), dob, gender, });
     if (imageFile) {
       const imageUpload = await cloudinary.uploader.upload(imageFile.path, {
         resource_type: "image",
@@ -152,16 +146,7 @@ const bookApointment = async (req, res) => {
 
     delete docData.slots_booked;
 
-    const appoitmentData = {
-      userId,
-      docId,
-      userData,
-      docData,
-      amount: docData.fees,
-      slotTime,
-      slotDate,
-      date: Date.now(),
-    };
+    const appoitmentData = { userId, docId, userData, docData, amount: docData.fees, slotTime, slotDate, date: Date.now(),};
 
     const newApointment = new apointmentModel(appoitmentData);
     await newApointment.save();
@@ -189,4 +174,30 @@ const listApointments = async (req, res) => {
   }
 };
 
-export { registerUser, loginUser, getProfile, updateProfile, bookApointment ,listApointments };
+//API TO CANCEL  APOINTMENT
+
+const cancelApointment = async (req, res) => {
+  try {
+    const { userId, apointmentId } = req.body;
+    const apointmentData = await apointmentModel.findById(apointmentId);
+    if (apointmentData.userId !== userId) {
+      return res.json({ success: false, message:'Unauthorized action' });
+    }
+    await apointmentModel.findByIdAndUpdate(apointmentId,{cancelled:true}) //jab slot cancel hoga to uska time bhi free hoga jise jme dobaara render kraana pdega qki booked hone pr ui se vo hide hota tha
+    
+    //Releasing doctor slot 
+    const {docId,slotDate,slotTime} = apointmentData
+
+    const docData = await doctorModel.findById(docId);
+    let slots_booked = docData.slots_booked
+    slots_booked[slotDate] = slots_booked[slotDate].filter(e=> e !== slotTime)
+
+    await doctorModel.findByIdAndUpdate(docId , {slots_booked})
+    res.json({success:true, message:'apointment cancel'})
+  } catch (error) {
+    res.json({ success: false, message: error.message });
+    console.log(error);
+  }
+};
+
+export { registerUser, loginUser, getProfile, updateProfile, bookApointment, listApointments, cancelApointment };
