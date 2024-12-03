@@ -26,9 +26,25 @@ const MyApointments = () => {
     
   }
 
+  const cancelApointment = async(apointmentId)=>{
+    try {
+      const {data} = await axios.post(backendUrl+'/api/user/cancel-apointment',{apointmentId},{headers:{token}})
+      if (data.success) {
+        toast.success(data.message)
+        getUserApointments()
+      }else{
+        toast.error(data.message)
+      }
+      
+    } catch (error) {
+      toast.error(error.message)
+      console.log(error);
+    }
+  }
+
   useEffect(() => {
     if(token){
-      getUserApointments()
+      getUserApointments()      
     } 
   }, [token])
 
@@ -54,8 +70,9 @@ const MyApointments = () => {
               </div>
               <div></div>
               <div className='flex flex-col gap- justify-end'>
-                <button className='text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-primary hover:text-white transition-all duration-300'>Pay Online</button>
-                <button className='text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded mt-2 hover:bg-red-600 hover:text-white transition-all duration-300 ' >Cancel Appointment </button>
+                {!item.cancelled && <button className='text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-primary hover:text-white transition-all duration-300'>Pay Online</button> }
+                {!item.cancelled && <button onClick={()=>cancelApointment(item._id)} className='text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded mt-2 hover:bg-red-600 hover:text-white transition-all duration-300 ' >Cancel Appointment </button> }
+                {item.cancelled && <button className='s,:min-w-48 py-2 border border-red-500 rounded text-cred-500 px-2 bg-red-400 text-white ' >Apointment cancelled</button>}
               </div>
             </div>
           ))
