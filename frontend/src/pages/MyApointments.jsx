@@ -2,6 +2,8 @@ import React, { useContext, useEffect, useState } from 'react'
 import { AppContext } from '../context/AppContext'
 import axios from 'axios'
 import { toast } from 'react-toastify'
+import { loadStripe } from '@stripe/stripe-js';
+
 const MyApointments = () => {
 
   const { backendUrl, token, getDoctorData } = useContext(AppContext)
@@ -18,20 +20,6 @@ const MyApointments = () => {
       const { data } = await axios.get(backendUrl + '/api/user/list-apointment', { headers: { token } })
       if (data.success) {
         setApointments(data.apointments.reverse())
-      }
-    } catch (error) {
-      toast.error(error.message)
-      console.log(error);
-    }
-
-  }
-
-  const stripePayment = async (apointmentId) => {
-    try {
-      const { data } = await axios.post(backendUrl+'/api/user/placeorder-stripe',{ apointmentId },{ headers: { token } })
-      if(data.success){
-        console.log(data);
-        
       }
     } catch (error) {
       toast.error(error.message)
@@ -86,7 +74,7 @@ const MyApointments = () => {
               </div>
               <div></div>
               <div className='flex flex-col gap- justify-end'>
-                {!item.cancelled && <button onClick={() => stripePayment(item._id)} className='text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-primary hover:text-white transition-all duration-300'>Pay Online</button>}
+                {!item.cancelled && <button  className='text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-primary hover:text-white transition-all duration-300'>Pay Online</button>}
                 {!item.cancelled && <button onClick={() => cancelApointment(item._id)} className='text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded mt-2 hover:bg-red-600 hover:text-white transition-all duration-300 ' >Cancel Appointment </button>}
                 {item.cancelled && <button className='s,:min-w-48 py-2 border border-red-500 rounded text-cred-500 px-2 bg-red-400 text-white ' >Apointment cancelled</button>}
               </div>
