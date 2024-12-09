@@ -202,30 +202,20 @@ const cancelApointment = async (req, res) => {
   }
 };
 
-//RAZORPAY INSTANCE
-
-// const razorpayInstance = new razorpay({
-//   key_id:'',
-//   key_secret:''
-// })
-
 //STRIPE INSTANCE GATEWAY INITIALIZE
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 
 
 
-//API TO MAKE PAYMENT OF APOINTMENT USING RAZORPAY
-
-const paymentRazorpay = async(req,res)=>{
-
-}
 
 //API TO MAKE PAYMENT OF APOINTMENT USING STRIPE
 
 const placeOrderStripe = async(req,res)=>{
 try {
   const { apointmentId } = req.body
+  const {origin} = req.headers;
+
   const apointmentData = await apointmentModel.findById(apointmentId)
   console.log(apointmentData);
   res.json({success:true,apointmentData})

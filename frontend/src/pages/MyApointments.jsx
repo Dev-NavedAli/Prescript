@@ -2,13 +2,12 @@ import React, { useContext, useEffect, useState } from 'react'
 import { AppContext } from '../context/AppContext'
 import axios from 'axios'
 import { toast } from 'react-toastify'
-import { loadStripe } from '@stripe/stripe-js';
 
 const MyApointments = () => {
 
   const { backendUrl, token, getDoctorData } = useContext(AppContext)
   const [apointments, setApointments] = useState([])
-  const months = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+  const months = [ '', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ]
 
   const slotDateFormat = (slotDate) => {
     const dateArray = slotDate.split('_')
