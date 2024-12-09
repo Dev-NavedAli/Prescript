@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { AppContext } from '../context/AppContext'
 import axios from 'axios'
 import { toast } from 'react-toastify'
+import Swal from 'sweetalert2';
 
 const MyApointments = () => {
 
@@ -45,6 +46,23 @@ const MyApointments = () => {
     }
   }
 
+  const amountpay = ()=>{    
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'Do you want to proceed with the payment?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, proceed',
+      cancelButtonText: 'No, cancel',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        toast.success('Appointment successfully scheduled');
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        toast.error('Payment not Done');
+      }
+    });
+  }
+
   useEffect(() => {
     if (token) {
       getUserApointments()
@@ -73,7 +91,7 @@ const MyApointments = () => {
               </div>
               <div></div>
               <div className='flex flex-col gap- justify-end'>
-                {!item.cancelled && <button  className='text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-primary hover:text-white transition-all duration-300'>Pay Online</button>}
+                {!item.cancelled && <button onClick={amountpay} className='text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-primary hover:text-white transition-all duration-300'>Pay</button>}
                 {!item.cancelled && <button onClick={() => cancelApointment(item._id)} className='text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded mt-2 hover:bg-red-600 hover:text-white transition-all duration-300 ' >Cancel Appointment </button>}
                 {item.cancelled && <button className='s,:min-w-48 py-2 border border-red-500 rounded text-cred-500 px-2 bg-red-400 text-white ' >Apointment cancelled</button>}
               </div>
