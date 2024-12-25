@@ -46,7 +46,7 @@ const MyApointments = () => {
     }
   }
 
-  const amountpay = ()=>{    
+  const amountpay = async()=>{    
     Swal.fire({
       title: 'Are you sure?',
       text: 'Do you want to proceed with the payment?',
@@ -57,6 +57,7 @@ const MyApointments = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         toast.success('Appointment successfully scheduled');
+
       } else if (result.dismiss === Swal.DismissReason.cancel) {
         toast.error('Payment not Done');
       }
