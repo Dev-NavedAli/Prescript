@@ -9,6 +9,7 @@ const AdminContextProvider = (props) => {
     const [aToken, setAToken] = useState(localStorage.getItem('aToken') ? localStorage.getItem('aToken') : '')
     const [doctors, setDoctors] = useState([])
     const [apointments, setApointments] = useState([])
+    const [dashData, setDashData] = useState(false)
 
     const backendUrl = import.meta.env.VITE_BACKEND_URL
 
@@ -23,7 +24,7 @@ const AdminContextProvider = (props) => {
             console.log(error)
             toast.error(error.message)
         }
-    }                       
+    }
 
     const changeAvailability = async (docId) => {
 
@@ -60,13 +61,29 @@ const AdminContextProvider = (props) => {
 
     const cancelApointment = async (appointmentId) => {
         try {
-            const {data} = await axios.post(backendUrl+'/api/admin/cancel-appointment',{appointmentId},{headers:{aToken}})
+            const { data } = await axios.post(backendUrl + '/api/admin/cancel-appointment', { appointmentId }, { headers: { aToken } })
             console.log(data);
-            
+
             if (data.succes) {
                 toast.success(data.message)
                 getAllApointments()
-            }else{
+            } else {
+                toast.error(data.message)
+                console.log(data.message);
+            }
+        } catch (error) {
+            console.log(error)
+            toast.error(error.message)
+        }
+    }
+
+    const getDashData = async () => {
+        try {
+            const { data } = await axios.get(backendUrl + '/api/admin/dashboard', { headers: { aToken } })
+            if (data.succes) {
+                setDashData(data.dashData)
+                console.log(data.dashData)
+            } else {
                 toast.error(data.message)
                 console.log(data.message);
             }
@@ -77,7 +94,7 @@ const AdminContextProvider = (props) => {
     }
 
     const value = {
-        aToken, setAToken, backendUrl, doctors, getAllDoctors, changeAvailability,apointments,setApointments,getAllApointments,cancelApointment
+        aToken, setAToken, backendUrl, doctors, getAllDoctors, changeAvailability, apointments, setApointments, getAllApointments, cancelApointment,getDashData,dashData
     }
 
     return (
