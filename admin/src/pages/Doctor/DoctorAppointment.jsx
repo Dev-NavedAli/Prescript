@@ -8,7 +8,7 @@ import { AppContext } from '../../context/AppContext'
 const DoctorAppointment = () => {
 
   const { calculateAge, slotDateFormat, currency } = useContext(AppContext)
-  const { dToken, appointments, setAppointments, getAppointments } = useContext(DoctorContext)
+  const { dToken, appointments, getAppointments,completeAppointment,cancelAppointment } = useContext(DoctorContext)
 
   useEffect(() => {
     if (dToken) {
@@ -43,8 +43,8 @@ const DoctorAppointment = () => {
               <p>{slotDateFormat(item.slotDate)},{item.slotTime}</p>
               <p>{currency}{item.amount}</p>
               <div className='flex'>
-                <img className='w-10 cursor-pointer' src={assets.cancel_icon} alt="" />
-                <img className='w-10 cursor-pointer' src={assets.tick_icon} alt="" /></div>
+                <img onClick={()=>cancelAppointment(item._id)} className='w-10 cursor-pointer' src={assets.cancel_icon} alt="" />
+                <img onClick={()=>completeAppointment(item._id)} className='w-10 cursor-pointer' src={assets.tick_icon} alt="" /></div>
             </div>
           ))
         }
