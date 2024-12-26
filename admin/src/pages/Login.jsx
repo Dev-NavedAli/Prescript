@@ -2,7 +2,8 @@ import React, { useContext, useState } from 'react'
 import { assets } from "../assets/assets.js"
 import { AdminContext } from '../context/AdminContext.jsx'
 import axios from "axios"
-import  { toast } from "react-toastify"
+import { toast } from "react-toastify"
+import { DoctorContext } from '../context/DoctorContext.jsx'
 
 const Login = () => {
 
@@ -12,23 +13,34 @@ const Login = () => {
   const [password, setPassword] = useState('')
 
   const { setAToken, backendUrl } = useContext(AdminContext)
+  const {  dToken  , setDToken } = useContext(DoctorContext)
 
   const onSubmitHandler = async (e) => {
     e.preventDefault()
     try {
       if (state === 'Admin') {
         const { data } = await axios.post(backendUrl + '/api/admin/login', { email, password })
-        if(data.success){
-          localStorage.setItem('aToken',data.token) //storing token into local storage 
-          setAToken(data.token);    
-        }else{
+        if (data.success) {
+          localStorage.setItem('aToken', data.token) //storing token into local storage 
+          setAToken(data.token);
+        } else {
+          toast.error(data.message)
+        }
+      } else {
+        const { data } = await axios.post(backendUrl + '/api/doctor/login', { email, password })
+        if (data.success) {
+          localStorage.setItem('dToken', data.token) //storing token into local storage 
+          setDToken(data.token);
+          console.log(data.token);
+          
+        } else {
           toast.error(data.message)
         }
       }
     } catch (error) {
-        toast.error(error.message)
-        console.log('Invalid credentials');
-        
+      toast.error(error.message)
+      console.log('Invalid credentials');
+
     }
   }
 
