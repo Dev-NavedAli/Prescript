@@ -94,7 +94,7 @@ const appointmentCancel = async (req, res) => {
       await apointmentModel.findByIdAndUpdate(appointmentId, {
         cancelled: true,
       });
-      return res.json({ success: true, message: "Appointment completed" });
+      return res.json({ success: true, message: "Appointment cancelled" });
     } else {
       return res.json({ success: false, message: "Cancellation Failed" });
     }
@@ -103,6 +103,40 @@ const appointmentCancel = async (req, res) => {
     res.json({ success: false, message: error.message });
   }
 };
+
+//API to get dashboard data for doctor panel
+
+const doctorDashboard = async (req, res) => {
+  try {
+    const { docId } = req.body;
+    const appointments = await apointmentModel.find({ docId });
+
+    let earnings = 0;
+
+    appointments.map((item) => {
+      if (item.isCompleted) {
+        earnings += item.amount;
+      }
+    });
+
+    let patients = [];
+
+    appointments.map((item) => {
+      if (!patients.includes(item.userId)) {
+        patients.push(item.userId);
+      }
+    });
+
+    const dashData = {
+      earnings,
+      appointments: appointments.length,
+      patients: patients.length,
+      latestAppointments: appointments.reverse().slice(0, 5),
+    };
+    res.json({ success: true, dashData });
+  } catch (error) {}
+};
+
 export {
   changeAvailablity,
   doctorList,
@@ -110,4 +144,5 @@ export {
   appointmentsDoctor,
   appointmentCancel,
   appoinmentComplete,
+  doctorDashboard,
 };
