@@ -82,7 +82,7 @@ const DoctorContextProvider = (props) => {
             const { data } = await axios.get(backendUrl+'/api/doctor/profile', { headers: { dToken } })
             if (data.success) {
                 setProfileData(data.profileData)
-                toast.success(data.message)
+                console.log(data)
             } else {
                 toast.error(data.message)
             }
