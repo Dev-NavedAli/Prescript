@@ -20,8 +20,7 @@ const DoctorProfile = () => {
         fees: profileData.fees,
         available: profileData.available
       }
-
-      const { data } = await axios.post(backendUrl+'/api/doctor/update-profile', updateData , { headers: { dToken } })
+      const { data } = await axios.post(backendUrl+'/api/doctor/update-profile',  updateData , { headers: { dToken } })
       if (data.success) {
         toast.success(data.message)
         setIsEdit(false)
@@ -73,7 +72,7 @@ const DoctorProfile = () => {
           </div>
 
           <div className='flex gap-1 pt-2'>
-            <input onChange={() => isEdit && setProfileData(prev => ({ ...prev, available: !prev.available }))} checked={profileData.available} type="checkbox" />
+            <input checked={profileData.available} onChange={() => isEdit && setProfileData(prev => ({ ...prev, available: !prev.available }))}  type="checkbox" />
             <label htmlFor="">Available</label>
           </div>
           {
