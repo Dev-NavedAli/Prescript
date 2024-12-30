@@ -4,6 +4,7 @@ import { AdminContext } from '../context/AdminContext.jsx'
 import axios from "axios"
 import { toast } from "react-toastify"
 import { DoctorContext } from '../context/DoctorContext.jsx'
+import { Eye, EyeOff } from 'lucide-react';
 
 const Login = () => {
 
@@ -11,9 +12,13 @@ const Login = () => {
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
 
   const { setAToken, backendUrl } = useContext(AdminContext)
-  const {  dToken  , setDToken } = useContext(DoctorContext)
+  const { dToken, setDToken } = useContext(DoctorContext)
+
+
+
 
   const onSubmitHandler = async (e) => {
     e.preventDefault()
@@ -32,7 +37,7 @@ const Login = () => {
           localStorage.setItem('dToken', data.token) //storing token into local storage 
           setDToken(data.token);
           console.log(data.token);
-          
+
         } else {
           toast.error(data.message)
         }
@@ -44,6 +49,10 @@ const Login = () => {
     }
   }
 
+  const passwordToggler = () => {
+    setShowPassword((prev) => !prev)
+  }
+
   return (
     <form onSubmit={onSubmitHandler} className='min-h-[80vh] flex items-center'>
       <div className='flex flex-col gap-3 m-auto items-start  p-8 min-w-[340px] sm:min-w-96 border rounded-xl text-[#5E5E5E] text-sm shadow-lg'>
@@ -52,9 +61,12 @@ const Login = () => {
           <p>Email</p>
           <input type="email" required onChange={(e) => setEmail(e.target.value)} value={email} className='border border-[#DADADA] rounded w-full p-2 mt-1' />
         </div>
-        <div className='w-full'>
+        <div className='w-full relative'>
           <p>Password</p>
-          <input type="password" onChange={(e) => setPassword(e.target.value)} value={password} required className='border border-[#DADADA] rounded w-full p-2 mt-1' />
+          <button type='button' onClick={passwordToggler} className='absolute right-2 bottom-2  '>{
+            showPassword ? <EyeOff /> : <Eye />
+          }</button>
+          <input type={showPassword ? "password" : "text"} onChange={(e) => setPassword(e.target.value)} value={password} required className='  border border-[#DADADA] rounded w-full p-2 mt-1' />
         </div>
         <button className='bg-[#5F65FF] text-white w-full py-2 rounded-md text-base' >Login</button>
         {
