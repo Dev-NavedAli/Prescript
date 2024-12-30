@@ -7,8 +7,8 @@ import { assets } from '../../assets/assets'
 
 const AllApointments = () => {
 
-  const { aToken, apointments, getAllApointments ,cancelApointment } = useContext(AdminContext)
-  const {calculateAge , slotDateFormat , currency} = useContext(AppContext)
+  const { aToken, apointments, getAllApointments, cancelApointment } = useContext(AdminContext)
+  const { calculateAge, slotDateFormat, currency } = useContext(AppContext)
 
   useEffect(() => {
     if (aToken) {
@@ -41,8 +41,13 @@ const AllApointments = () => {
               <img className='w-8 rounded-full bg-gray-100' src={item.docData.image} alt="" /> <p>{item.docData.name}</p>
             </div>
             <p className='text-red-400 text-xs font-medium '>{currency}{item.amount}</p>
-            {item.cancelled ? <p>Cancelled</p> : <img onClick={()=>cancelApointment(item._id)} className='w-10 cursor-pointer' src={assets.cancel_icon} alt="" /> }
-           
+            {
+              item.cancelled
+                ? <p className='text-red-400 text-xs font-medium'>Cancelled</p>
+                : item.isCompleted
+                  ? <p className='text-green-500 text-xs font-medium'> Completed </p>
+                  : <img onClick={() => cancelApointment(item._id)} className='w-10 cursor-pointer' src={assets.cancel_icon} alt="" />
+            }
           </div>
         ))}
       </div>
