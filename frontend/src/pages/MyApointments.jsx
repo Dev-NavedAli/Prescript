@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from 'react'
 import { AppContext } from '../context/AppContext'
 import axios from 'axios'
 import { toast } from 'react-toastify'
-import Swal from 'sweetalert2';
 
 const MyApointments = () => {
 
@@ -45,23 +44,14 @@ const MyApointments = () => {
       console.log(error);
     }
   }
-
-  const amountpay = async()=>{    
-    Swal.fire({
-      title: 'Are you sure?',
-      text: 'Do you want to proceed with the payment?',
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonText: 'Yes, proceed',
-      cancelButtonText: 'No, cancel',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        toast.success('Appointment successfully scheduled');
-
-      } else if (result.dismiss === Swal.DismissReason.cancel) {
-        toast.error('Payment not Done');
-      }
-    });
+  
+  const amountpay = async () => {
+    const confirmPayment = window.confirm('Do you want to proceed with the payment?');
+    if (confirmPayment) {
+      toast.success('Appointment successfully scheduled');
+    } else {
+      toast.error('Payment not Done');
+    }
   }
 
   useEffect(() => {
