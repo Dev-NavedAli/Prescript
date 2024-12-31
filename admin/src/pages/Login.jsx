@@ -4,7 +4,8 @@ import { AdminContext } from '../context/AdminContext.jsx'
 import axios from "axios"
 import { toast } from "react-toastify"
 import { DoctorContext } from '../context/DoctorContext.jsx'
-import { Eye, EyeOff } from 'lucide-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 const Login = () => {
 
@@ -64,7 +65,7 @@ const Login = () => {
         <div className='w-full relative'>
           <p>Password</p>
           <button type='button' onClick={passwordToggler} className='absolute right-2 bottom-2  '>{
-            showPassword ? <EyeOff /> : <Eye />
+            <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} /> 
           }</button>
           <input type={showPassword ? "password" : "text"} onChange={(e) => setPassword(e.target.value)} value={password} required className='  border border-[#DADADA] rounded w-full p-2 mt-1' />
         </div>
