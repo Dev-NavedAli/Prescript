@@ -6,8 +6,6 @@ import jwt from "jsonwebtoken";
 import { v2 as cloudinary } from "cloudinary";
 import doctorModel from "../models/doctorModel.js";
 import apointmentModel from "../models/apointmentModel.js";
-import razorpay from "razorpay"
-import Stripe from "stripe"
 
 const registerUser = async (req, res) => {
   try {
@@ -202,28 +200,4 @@ const cancelApointment = async (req, res) => {
   }
 };
 
-//STRIPE INSTANCE GATEWAY INITIALIZE
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
-
-
-
-
-//API TO MAKE PAYMENT OF APOINTMENT USING STRIPE
-
-const placeOrderStripe = async(req,res)=>{
-try {
-  const { apointmentId } = req.body
-  const {origin} = req.headers;
-
-  const apointmentData = await apointmentModel.findById(apointmentId)
-  console.log(apointmentData);
-  res.json({success:true,apointmentData})
-
-} catch (error) {
-  res.json({ success: false, message: error.message });
-    console.log(error);
-}
-}
-
-export { registerUser, loginUser, getProfile, updateProfile, bookApointment, listApointments, cancelApointment ,placeOrderStripe };
+export { registerUser, loginUser, getProfile, updateProfile, bookApointment, listApointments, cancelApointment  };

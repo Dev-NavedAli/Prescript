@@ -1,5 +1,5 @@
 import express from "express";
-import {getProfile,loginUser,registerUser,updateProfile,bookApointment,listApointments,cancelApointment, placeOrderStripe,} from "../controllers/userController.js";
+import {getProfile,loginUser,registerUser,updateProfile,bookApointment,listApointments,cancelApointment} from "../controllers/userController.js";
 import authUser from "../middlewares/authUser.js";
 import upload from "../middlewares/multer.js";
 
@@ -12,6 +12,5 @@ userRouter.post("/update-profile",upload.single("image"),authUser,updateProfile)
 userRouter.post("/book-apointment", authUser, bookApointment);
 userRouter.get("/list-apointment", authUser, listApointments);
 userRouter.post("/cancel-apointment", authUser, cancelApointment);
-userRouter.post('/placeorder-stripe',authUser,placeOrderStripe)
 
 export default userRouter;
