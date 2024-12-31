@@ -15,30 +15,9 @@ const PORT = process.env.PORT || 3000;
 
 //middlewares
 app.use(express.json())
-// app.use(cors())
+app.use(cors())
 
 
-const allowedOrigins = [
-    'https://prescripto-frontend-psi-beige.vercel.app',
-    'https://prescripto-admin-taupe.vercel.app' // Replace with your second URL
-  ];
-  
-  const corsOptions = {
-    origin: (origin, callback) => {
-      // Allow requests without an origin (like from Postman or no-origin requests)
-      if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-        callback(null, true); // Allow the request
-      } else {
-        callback(new Error('Not allowed by CORS')); // Reject the request
-      }
-    },
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // You can specify methods if necessary
-    credentials: true, // If you're sending cookies or authentication headers
-    allowedHeaders: ['Content-Type', 'Authorization', 'x-auth-token'], // Specify headers if needed
-  };
-  
-  
-  app.use(cors(corsOptions))
 
 connectDB().then(()=>{
     console.log('connected to db successfully');
