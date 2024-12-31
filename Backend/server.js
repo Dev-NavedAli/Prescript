@@ -25,13 +25,18 @@ const allowedOrigins = [
   
   const corsOptions = {
     origin: (origin, callback) => {
+      // Allow requests without an origin (like from Postman or no-origin requests)
       if (!origin || allowedOrigins.indexOf(origin) !== -1) {
         callback(null, true); // Allow the request
       } else {
         callback(new Error('Not allowed by CORS')); // Reject the request
       }
     },
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // You can specify methods if necessary
+    credentials: true, // If you're sending cookies or authentication headers
+    allowedHeaders: ['Content-Type', 'Authorization', 'x-auth-token'], // Specify headers if needed
   };
+  
   
   app.use(cors(corsOptions))
 
